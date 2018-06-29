@@ -1,0 +1,42 @@
+---
+  - name: copying to home path
+    copy:
+     src: /var/lib/tomcat8/webapps/SpringMVCSecurityXML.war
+     dest: ~/
+
+  - name: create backup
+    file:
+     path: ~/backup
+     state: directory
+  
+  - name: getting count value to check if any backup is present in the backup directory
+    stat:
+     path: ~/backup/SpringMVCSecurityXML_v1.war
+    register: count1
+
+  - name: copying current version to previous if count not equal to 0
+    copy:
+     src: ~/backup/SpringMVCSecurityXML_v1.war
+     dest: ~/backup/SpringMVCSecurityXML_v2.war
+     remote_src: yes
+    when: count1.stat.exists
+
+  - name: reflect the time of current to previous when count not equal to 0
+    command: touch -r ~/backup/SpringMVCSecurityXML_v1.war   ~/backup/SpringMVCSecurityXML_v2.war 
+    when: count1.stat.exists 
+
+  - name: copying latest version to current version
+    copy:
+     src: ~/SpringMVCSecurityXML.war
+     dest: ~/backup/SpringMVCSecurityXML_v1.war
+     remote_src: yes
+
+
+  - name: reflect the time of latest to current
+    command: touch -r ~/SpringMVCSecurityXML.war ~/backup/SpringMVCSecurityXML_v1.war
+ 
+  - name: deleting from home path
+    file:
+     path: ~/SpringMVCSecurityXML.war
+     state: absent
+

@@ -1,0 +1,6 @@
+- hosts: WebServer
+  roles:
+    - tomcat8
+    - backup
+    - deploy
+

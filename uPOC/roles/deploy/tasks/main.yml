@@ -1,0 +1,5 @@
+  - name: deploy java app
+    become: yes
+    copy:
+      src: /var/lib/tomcat8/webapps/SpringMVCSecurityXML.war
+      dest: /var/lib/tomcat8/webapps
